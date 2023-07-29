@@ -2,8 +2,16 @@
 let
 # Define the username once
   user = "strangeloop";
+# My custom packages
+  overlays = {
+    nixpkgs.overlays = [
+      (import ../../overlays/vim-plugins.nix)
+      (import ../../overlays/gemstone.nix)
+    ];
+  };
 in
 {
+  imports = [ overlays ];
 # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${user} = {
     isNormalUser = true;

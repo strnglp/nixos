@@ -31,11 +31,6 @@
   outputs = { nixpkgs, ... } @inputs: 
     let
     lib = nixpkgs.lib;
-    overlays = {
-      nixpkgs.overlays = [
-        (import ./overlays/vim-plugins.nix)
-      ];
-    };
   in
   {
 
@@ -60,8 +55,6 @@
             ./system/gnome
 # add strangeloop user
             ./user/strangeloop
-
-            overlays
         ];
       };
     };

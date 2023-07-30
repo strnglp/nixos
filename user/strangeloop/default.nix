@@ -1,4 +1,4 @@
-{ config, pkgs, home-manager, ...}:
+{ pkgs, home-manager, ...}:
 let
 # Define the username once
   user = "strangeloop";
@@ -20,7 +20,7 @@ in
     shell = pkgs.fish;
   };
 # Per-user Home Manager configuration.
-  home-manager.users.${user} = { lib, ...}:
+  home-manager.users.${user} = { config, lib, ...}:
   {
     home = {
       username = "${user}";
@@ -45,6 +45,7 @@ in
         sqlite
 # Applications
         discord
+        ProfanityFE
       ];
 # Activation scripts to help configuration where home-manager has no implementation
       activation = {
@@ -60,6 +61,10 @@ in
           '';
       };
     };
+
+    # Symlink ProfanityFE so it's accessible
+    home.file."scripts/ProfanityFE".source = 
+      config.lib.file.mkOutOfStoreSymlink "${pkgs.ProfanityFE}";
 
     programs.home-manager.enable = true;
 

@@ -1,17 +1,10 @@
-{ pkgs, home-manager, ...}:
+{ pkgs, lib, home-manager, ...}:
 let
 # Define the username once
   user = "strangeloop";
-# My custom packages
-  overlays = {
-    nixpkgs.overlays = [
-      (import ../../overlays/vim-plugins.nix)
-      (import ../../overlays/gemstone.nix)
-    ];
-  };
+  auto-dark-mode-nvim = pkgs.callPackage ../../packages/vim-plugins {};
 in
 {
-  imports = [ overlays ];
 # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${user} = {
     isNormalUser = true;
@@ -28,7 +21,9 @@ in
       stateVersion = "23.05";
       packages = with pkgs; [
 # Neovim or programming related
+        bundix
         go
+        ruby
         rustc
         cargo
         php
@@ -45,7 +40,6 @@ in
         sqlite
 # Applications
         discord
-        ProfanityFE
       ];
 # Activation scripts to help configuration where home-manager has no implementation
       activation = {
@@ -61,10 +55,6 @@ in
           '';
       };
     };
-
-    # Symlink ProfanityFE so it's accessible
-    home.file."scripts/ProfanityFE".source = 
-      config.lib.file.mkOutOfStoreSymlink "${pkgs.ProfanityFE}";
 
     programs.home-manager.enable = true;
 
@@ -121,8 +111,9 @@ in
 
     programs.neovim = {
       enable = true;
-      plugins = with pkgs.vimPlugins; [
+      plugins = [
           auto-dark-mode-nvim
+      ] ++ (with pkgs.vimPlugins; [
           nvim-web-devicons
           lsp-format-nvim
           lsp-status-nvim
@@ -148,7 +139,7 @@ in
           vim-startify
           lualine-nvim
           vim-colorschemes
-          ];
+          ]);
       extraLuaConfig = builtins.readFile ./nvim/init.lua;
     };
 

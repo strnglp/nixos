@@ -41,19 +41,6 @@ in
 # Applications
         discord
       ];
-# Activation scripts to help configuration where home-manager has no implementation
-      activation = {
-# Clear files created by firefox so we can recreate them
-        cleanup = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-          $DRY_RUN_CMD rm -f $HOME/.mozilla/firefox/default/search.json.mozlz4
-          $DRY_RUN_CMD rm -f $HOME/.mozilla/firefox/default/content-prefs.sqlite
-          '';
-# Change the Firefox default zoom level to 120%
-        ffPrefs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          $DRY_RUN_CMD mkdir -p $HOME/.mozilla/firefox/default/
-          $DRY_RUN_CMD cp ${builtins.toPath ./firefox/content-prefs.sqlite} $HOME/.mozilla/firefox/default/content-prefs.sqlite 
-          '';
-      };
     };
 
     programs.home-manager.enable = true;
@@ -143,17 +130,6 @@ in
       extraLuaConfig = builtins.readFile ./nvim/init.lua;
     };
 
-    programs.firefox = {
-      enable = true;
-      profiles.default = {
-        isDefault = true;
-        search.default = "Google"; # todo, nix packages/wiki (home-manager manual)
-          extensions = [ ]; # todo, requires NUR
-          settings = {
-            "browser.zoom.full" = false; # only zoom text
-          };
-      };
-    };
   };
 
 # This has to be defined so Nix adds the correct PATHs
@@ -161,6 +137,4 @@ in
 # for setting config via home-manager, there may be a better way
   programs.fish.enable = true;
 
-# Allow Discord, Steam, etc.
-  nixpkgs.config.allowUnfree = true;
 }

@@ -11,6 +11,8 @@ in
 # Before changing this value read the documentation for this option
 # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
+# Allow Discord, Steam, etc.
+    nixpkgs.config.allowUnfree = true;
 
     imports = [
       home-manager.nixosModules.home-manager 
@@ -121,5 +123,29 @@ in
         viAlias = true;
         vimAlias = true;
       };
+
+    firefox = {
+      enable = true;
+      policies = {
+        DisablePocket = true;
+	DontCheckDefaultBrowser = true;
+	EnableTrackingProtection = true;
+	Homepage = "https://www.google.com";
+	NoDefaultBookmarks = true;
+	OfferToSaveLogins = false;
+	OfferToSaveLoginsDefault = false;
+	PasswordManagerEnabled = false;
+	SearchEngine = { Default = "Google"; };
+	SearchSuggestEnabled = false;
+	UserMessaging =  {
+	  WhatsNew = false;
+          ExtensionRecommendations = false;
+	  FeatureRecommendations = false;
+          UrlbarInterventions = false;
+          SkipOnboarding = true;
+          MoreFromMozilla = false;
+	};
+      };
     };
+  };
 }
